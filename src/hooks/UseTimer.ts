@@ -2,14 +2,30 @@ import { useState } from "react";
 function useTimer(initialTime: number) {
   const [timeLeft, setTimeLeft] = useState(initialTime);
 
-  const setTimer = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     setTimeLeft(Number.isNaN(value) ? 0 : value);
   };
 
+  const startTime = () => {
+    // Implementation for starting the timer
+  };
+
+  const pauseTime = () => {
+    // Implementation for pausing the timer
+  };
+
+  const resetTime = () => {
+    setTimeLeft(initialTime);
+  };
+
   return {
     timeLeft,
-    setTimer,
+    handleTimeChange,
+    setTimeLeft,
+    startTime,
+    pauseTime,
+    resetTime,
   };
 }
 
