@@ -1,31 +1,49 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 function useTimer(initialTime: number) {
   const [timeLeft, setTimeLeft] = useState(initialTime);
+  const [timeFeld, setTimeFeld] = useState(initialTime);
+  const [isRunning, setIsRunning] = useState(false);
+  const timeRef = useRef<number | null>(null);
 
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    setTimeLeft(Number.isNaN(value) ? 0 : value);
-  };
+  function handleTimerChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const value = Number(event.target.value);
+    setTimeFeld(value);
+    setTimeLeft(value);
+  }
 
-  const startTime = () => {
-    // Implementation for starting the timer
-  };
+  useEffect(() => {
+    if (!isRunning) return;
+    timeRef.current = window.setInterval(() => {
+      console.log(timeRef);
 
-  const pauseTime = () => {
-    // Implementation for pausing the timer
-  };
+      setTimeLeft((prevTime) => {
+        if (prevTime > 0.1) {
+          return prevTime - 0.1;
+        } else {
+          clearInterval(timeRef.current!);
+          setIsRunning(false);
+          return 0;
+        }
+      });
+    }, 100);
+    return () => {
+      if (timeRef.current) {
+        clearInterval(timeRef.current);
+        timeRef.current = null;
+      }
+    };
+  }, [isRunning]);
 
-  const resetTime = () => {
-    setTimeLeft(initialTime);
-  };
+  function startTime() {
+    setTimeLeft(timeFeld);
+    setIsRunning(true);
+  }
 
   return {
     timeLeft,
-    handleTimeChange,
-    setTimeLeft,
+    handleTimerChange,
     startTime,
-    pauseTime,
-    resetTime,
+    timeFeld,
   };
 }
 
