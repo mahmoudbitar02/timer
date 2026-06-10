@@ -11,21 +11,33 @@ function useTimer(initialTime: number) {
     setTimeLeft(value);
   }
 
+  function startTime() {
+    setIsRunning(true);
+    timeLeft === 0 ? setTimeLeft(timeFeld) : setTimeLeft(timeLeft);
+  }
+
+  function pauseTime() {
+    setIsRunning(false);
+  }
+
+  function resetTime() {
+    setIsRunning(false);
+    setTimeFeld(initialTime);
+    setTimeLeft(initialTime);
+  }
+
   useEffect(() => {
     if (!isRunning) return;
     timeRef.current = window.setInterval(() => {
-      console.log(timeRef);
-
       setTimeLeft((prevTime) => {
         if (prevTime > 0.1) {
           return prevTime - 0.1;
-        } else {
-          clearInterval(timeRef.current!);
-          setIsRunning(false);
-          return 0;
         }
+        setIsRunning(false);
+        return 0;
       });
     }, 100);
+
     return () => {
       if (timeRef.current) {
         clearInterval(timeRef.current);
@@ -34,15 +46,12 @@ function useTimer(initialTime: number) {
     };
   }, [isRunning]);
 
-  function startTime() {
-    setTimeLeft(timeFeld);
-    setIsRunning(true);
-  }
-
   return {
     timeLeft,
     handleTimerChange,
     startTime,
+    pauseTime,
+    resetTime,
     timeFeld,
   };
 }

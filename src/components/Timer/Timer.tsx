@@ -1,7 +1,7 @@
 import "./Timer.scss";
 import useTimer from "../../hooks/UseTimer";
 function Timer() {
-  const { timeLeft, handleTimerChange, startTime, timeFeld } = useTimer(0);
+  const { timeLeft, handleTimerChange, startTime, pauseTime, resetTime, timeFeld } = useTimer(0);
 
   return (
     <div className="timer">
@@ -15,8 +15,12 @@ function Timer() {
           <button className="timer__button" onClick={startTime}>
             Start
           </button>
-          <button className="timer__button">Pause</button>
-          <button className="timer__button">Reset</button>
+          <button className="timer__button" onClick={pauseTime}>
+            Pause
+          </button>
+          <button className="timer__button" onClick={resetTime}>
+            Reset
+          </button>
         </div>
       </div>
     </div>
