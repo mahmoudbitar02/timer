@@ -1,58 +1,58 @@
 import { useState, useEffect, useRef } from "react";
 function useTimer(initialTime: number) {
   const [timeLeft, setTimeLeft] = useState(initialTime);
-  const [timeFeld, setTimeFeld] = useState(initialTime);
+  const [timeInput, setTimeInput] = useState(initialTime);
   const [isRunning, setIsRunning] = useState(false);
   const timeRef = useRef<number | null>(null);
 
-  function handleTimerChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleChangeValue(event: React.ChangeEvent<HTMLInputElement>) {
     const value = Number(event.target.value);
-    setTimeFeld(value);
+    setTimeInput(value);
     setTimeLeft(value);
   }
 
-  function startTime() {
+  const startTimer = () => {
     setIsRunning(true);
-    timeLeft === 0 ? setTimeLeft(timeFeld) : setTimeLeft(timeLeft);
-  }
-
-  function pauseTime() {
-    setIsRunning(false);
-  }
-
-  function resetTime() {
-    setIsRunning(false);
-    setTimeFeld(initialTime);
-    setTimeLeft(initialTime);
-  }
+    timeLeft === 0 ? setTimeLeft(timeInput) : setTimeLeft(timeLeft);
+  };
 
   useEffect(() => {
+    console.log(isRunning);
     if (!isRunning) return;
     timeRef.current = window.setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime > 0.1) {
-          return prevTime - 0.1;
+      setTimeLeft((prev) => {
+        if (prev > 0.1) {
+          return prev - 0.1;
+        } else {
+          if (timeRef.current === 0) clearInterval(timeRef.current);
+          setIsRunning(false);
+          return 0;
         }
-        setIsRunning(false);
-        return 0;
       });
     }, 100);
-
     return () => {
-      if (timeRef.current) {
-        clearInterval(timeRef.current);
-        timeRef.current = null;
-      }
+      if (timeRef.current) clearInterval(timeRef.current);
+      console.log(`clear ${timeRef.current}`);
     };
   }, [isRunning]);
 
+  const pauseTimer = () => {
+    setIsRunning(false);
+  };
+
+  const resetTimer = () => {
+    setIsRunning(false);
+    setTimeInput(initialTime);
+    setTimeLeft(initialTime);
+  };
+
   return {
     timeLeft,
-    handleTimerChange,
-    startTime,
-    pauseTime,
-    resetTime,
-    timeFeld,
+    timeInput,
+    handleChangeValue,
+    startTimer,
+    pauseTimer,
+    resetTimer,
   };
 }
 
